@@ -6,13 +6,17 @@ defmodule Stew.Controller do
   end
 
   def posts(conn) do
-    {:ok, Blog.list_posts() |> JSON.encode!(), conn}
+    {:ok, Blog.list_posts() |> JSON.encode!(),
+     Plug.Conn.put_resp_content_type(conn, "application/json")}
   end
 
   def post(%{params: %{"slug" => slug}} = conn) do
     case Blog.get_post(slug) do
-      nil -> :error
-      post -> {:ok, post |> JSON.encode!(), conn}
+      nil ->
+        {:error, conn}
+
+      post ->
+        {:ok, post |> JSON.encode!(), Plug.Conn.put_resp_content_type(conn, "application/json")}
     end
   end
 end

@@ -12,7 +12,7 @@ defmodule Stew.Router do
     |> handle_response()
   end
 
-  get "/posts/:slug" do
+  get "/posts/:slug.json" do
     conn
     |> Controller.post()
     |> handle_response()
