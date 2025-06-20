@@ -1,20 +1,18 @@
 defmodule Stew.Controller do
-  alias Plug.Conn
   alias Stew.Blog
 
   def hello(%{params: %{"name" => name}} = conn) do
-    Conn.send_resp(conn, 200, "hello #{name}")
+    {:ok, "Hello #{name}", conn}
   end
 
   def posts(conn) do
-    posts = Blog.list_posts() |> JSON.encode!()
-    Conn.send_resp(conn, 200, posts)
+    {:ok, Blog.list_posts() |> JSON.encode!(), conn}
   end
 
   def post(%{params: %{"slug" => slug}} = conn) do
     case Blog.get_post(slug) do
-      nil -> Conn.send_resp(conn, 404, "oops")
-      post -> Conn.send_resp(conn, 200, post |> JSON.encode!())
+      nil -> :error
+      post -> {:ok, post |> JSON.encode!(), conn}
     end
   end
 end
